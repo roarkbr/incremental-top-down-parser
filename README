@@ -1,0 +1,122 @@
+To compile, you will need to change the install directory in Makedefs,
+then cd to the bin directory and do make all.  Linux requires -lm
+flag, Mac OSX doesn't.  Copy Makefile.MAC to Makefile for Mac OSX; copy 
+Makefile.linux to Makefile for linux systems.
+
+info on usage: bin/tdptrain -?     or    bin/tdparse -?
+
+standard usage (train on 2-21, test on 24 for WSJ):
+bin/tdptrain -t0.05 -p -s"(SINV(S" -v -F parse.model.slc.p05 -m data/tree.functs.sfile data/wsj-02-21.mrgEC
+bin/tdparse -v -F parse.output parse.model.slc.p05 data/strings.f24
+the output comes with three numbers before the parse:
+  cand  tot-cands   -logCondProb    (TOP...
+this is for k-best parsing.
+
+to evaluate with just one candidate:
+sed 's/.*(TOP/(TOP/g' parse.output >parse.best
+data/evalb/evalb -p data/evalb/COLLINS.prm data/wsj_24.mrgEC parse.best >parse.eval
+
+====================
+new verbose output:
+
+If you run with the -p command line switch, it outputs word-by-word scores 
+that are available from standard running of the parser, including the 
+surprisal measures and other internal state statistics.  There are column 
+headers, and I'll explain each of them in turn:
+
+pfix header
+
+in this column, we get some info on the particular row.  For each word w, 
+this will read 'pfix#w' where # can range over three symbols: '-' are 
+tokens which 'belong' to the previous token, such as punctuation or 
+contractions or end-of-string; '+' are closed class lexical items; and ':' 
+are anything else.  non-lexical and closed class words can are identified 
+by including the following switch when parsing:
+
+-c data/closed.class.words
+
+and that file can be modified as you like.  In that file, 0 following the 
+word means punct. or contraction; 1 following the word means closed class.
+
+prefix
+
+This column gives prefix probability, sum of probs over the beam.
+
+srprsl nolex    lex
+
+These three columns give total surprisal, syntactic surprisal, and lexical 
+surprisal, as defined in the paper.
+
+ambig
+
+This column gives the entropy over the current beam, essentially a measure 
+of ambiguity.  If p is the conditional probability of each analysis in the 
+normalized beam, then this is -\sum p log p over the beam.
+
+open
+
+This column gives the weighted average open brackets over the beam.  (Easy 
+to derive from the parser, not of any particular utility so far.)
+
+rernk toprr
+
+These two columns examine what happens to the previously top-ranked 
+parses.  I'll explain this informally by abusing notation.  Let T_i be the 
+best scoring parse after word i, and let T^+_i be the set of parses after 
+word i+1 that are extensions of parse T_i.  Then rernk is p(T^+_i)/p(T_i) 
+where the p in this case is normalized over the beam (hence ratio can be 
+greater than 1).  A score of 1 means that these analyses occupy about the 
+same amount of conditional probability mass in the beam after one step; a 
+score greater than 1 means they are now occupying more of the conditional 
+probability mass; and less than 1 means they occupy less.  A score of zero 
+means it has fallen out of the beam.
+
+The second column here just looks at the top ranked parse at time i+1.  If 
+it is an extension of the top ranked parse at time i, then the ratio of 
+conditional prob is provided; otherwise zero.
+
+stps
+
+Finally, we look at the weighted average (over the normalized beam) of 
+derivation steps from the previous word.
+
+Part II: measures that cannot be derived from standard operation of the 
+parser.  These include the entropy measures, which are calculated by 
+extending the current parse to all possible following words (hence running 
+with this switch is slllllloooooowwwwww).  To get the entropy scores, run 
+with the -a switch, and it will provide additional scores related to 
+entropy.
+
+afix header
+
+just like prefix header, with closed class coding, etc.
+
+            entropy  noLexH    LexH
+
+total entropy, Syntactic entropy and lexical entropy, as described in the 
+paper.
+
+    rank  log10(rank)
+
+These two columns show the rank of the actual next word within the 
+vocabulary, in terms of the conditional prob of the word given the left 
+context.  Since we are calculating the probability of every word in the 
+lexicon, we can straightforwardly rank and report where the actual word 
+falls in the rank (and the log).
+
+log(p*/p)
+
+This score compares the probability of the top ranked word in the lexicon 
+versus the actual next word.  Thus if rank is 1, this score will be zero, 
+otherwise greater than zero.
+
+One last thing.  There are scores attached to each output tree (by default 
+the 1-best, but use -k to retrieve more), and those scores are:
+
+candidate rank
+total number of candidates in list
+tree score (without norm constant)
+tree negative log prob
+purely syntactic contribution to that total neg log prob
+lexical contribution to the neg log prob  (from POS -> word)
+

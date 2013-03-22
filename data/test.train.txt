@@ -1,0 +1,2 @@
+(TOP (S (NP (DT The) (NN dog)) (VP (VBD chased) (NP (DT the) (NN cat))) (. .)))
+(TOP (S (NP (DT The) (NN dog)) (VP (VBD barked)) (. .)))

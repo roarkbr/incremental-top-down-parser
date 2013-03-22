@@ -1,0 +1,2 @@
+The cat chased the dog .
+The dog barked the cat .
