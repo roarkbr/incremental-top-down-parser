@@ -1,0 +1,21 @@
+include ../Makedefs
+
+SRCS=tdptrain tdparse
+OBJS=tdptrain.o tdparse.o
+PROGS=tdptrain.c tdparse.c
+SRC= $(SRCDIR)/bin
+
+all: $(SRCS)
+
+tdptrain: tdptrain.o $(INCS) $(LIBS) -lm
+	$(CC) -o tdptrain tdptrain.o $(LIBS) -lm
+
+tdparse: tdparse.o $(INCS) $(LIBS) -lm
+	$(CC) -o tdparse tdparse.o $(LIBS) -lm
+
+$(PARLIB): $(LIBDEP) $(INCS)
+	cd $(INSTDIR)/lib; $(MAKE)
+
+$(OBJS): $(INCS) Makefile ../Makedefs
+
+

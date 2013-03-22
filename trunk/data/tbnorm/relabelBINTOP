@@ -1,0 +1,3 @@
+/^$/=top << /.*/
+
+relabel top BINTOP

@@ -1,0 +1,16 @@
+INSTDIR=/Users/roark/Work/src/tdp.dev/tdp.distrib.final
+CC= gcc
+CFLAGS= -g $(INCLUDEDIRS)
+PARLIB= $(INSTDIR)/lib/libparse.a
+PARINCLUDE= $(INSTDIR)/include
+LIBS= $(PARLIB)
+INCLUDEDIRS= -I$(PARINCLUDE)
+INCS= \
+$(PARINCLUDE)/pstruct.h \
+$(PARINCLUDE)/putil.h \
+$(PARINCLUDE)/parser.h \
+$(PARINCLUDE)/io-util.h
+LIBDEP= \
+$(INSTDIR)/lib/parser.c \
+$(INSTDIR)/lib/putil.c \
+$(INSTDIR)/lib/io-util.c

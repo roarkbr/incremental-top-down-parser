@@ -1,0 +1,51 @@
+Tree-walking operations, uppercase to skip symbols (e.g. punct.): 
+u     % up (move to parent)
+l     % left (move to left-sibling)
+f     % old structure left (go up if leftmost and parent is LC category)
+r     % right (move to right-sibling)
+d     % down (move to rightmost-child)
+c     % c-commanding (move to left c-commanding node)
+h     % head-child (move to head-child of node, or left-sib if no head yet)
+*     % continue previous operation as long as possible
+q'Z'  % query identity of node label with 'Z', continue if true
+s     % store node label for subsequent query
+
+Value-returning operations
+N     % Non-terminal tag
+W     % Current word (Preterminal POS nodes only)
+P     % Look-ahead POS-tag
+T     % Look-ahead terminal lexical item
+
+Short-hand for common functions
+i     % include all closer nodes as features also, ordered from close to far 
+0     % lq''     (only if leftmost child)
+j     % dl*      (leftmost-child of node)
+k     % q'(CC'   (only if coordination)
+
+Example functions:
+N                       % This label
+uN                      % Left-hand side (LHS)
+P                       % POS of look-ahead
+T                       % look-ahead word
+lN                      % last child of LHS
+llN                     % next to last child of LHS
+lllN                    % next to next to last child of LHS
+uuN                     % parent of LHS
+ulN                     % closest sibling left of LHS
+uuuN                    % grandparent of LHS
+uulN                    % closest sibling left of parent of LHS
+lq''uLq'(CC'Ldl*N       % if leftmost child, and parent coordinated, 
+                        %     return first child of conjoining cat
+uHN                     % category head of current constituent (no punct)
+uH*W                    % lexical head of current constituent (no punct)
+cH*N                    % POS of closest c-commanding lexical head
+cH*W                    % closest c-commanding lexical head
+ccH*W                   % 2nd closest c-commanding lexical head
+
+Example schemas:
+N:uN:lN:llN:lllN:uuN:ulN:uuuN:uulN:lq''uLq'(CC'Ldl*N:uHN:uH*T
+W:N:uN:lN:uuN:cH*N:cH*T
+
+shorthand for these schemas:
+N:illlN:iulN:iuulN:0uLkLjN:uHN:uH*T
+W:ilN:uuN:cH*N:cH*T
