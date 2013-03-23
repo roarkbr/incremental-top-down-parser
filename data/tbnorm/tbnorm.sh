@@ -1,7 +1,9 @@
 #! /bin/sh
 
-TREESURGEONPATH=..
-export CLASSPATH=$TREESURGEONPATH/stanford-tregex.jar:$CLASSPATH
+# This requires Stanford's tsurgeon package
+# you can get it here: http://nlp.stanford.edu/software/tregex.shtml
+TSURGEONPATH=/Users/roark/Work/src/stanford-tregex-2012-11-11
+export CLASSPATH=$TSURGEONPATH/stanford-tregex.jar:$CLASSPATH
 
 # removes empty nodes, normalizes root category to TOP and ensures unary TOP 
 # production; finds and removes function tags, coreference indices and 
