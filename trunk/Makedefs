@@ -1,4 +1,4 @@
-INSTDIR=/Users/roark/Work/src/tdp.dev/tdp.distrib.final
+INSTDIR=/Users/roark/Work/src/tdp.dev/incremental-top-down-parser
 CC= gcc
 CFLAGS= -g $(INCLUDEDIRS)
 PARLIB= $(INSTDIR)/lib/libparse.a
